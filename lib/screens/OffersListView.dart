@@ -13,7 +13,7 @@ class OffersListView extends StatefulWidget {
 }
 
 class _OffersListState extends State<OffersListView> {
-  var _meals = [];
+  var _offers = [];
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _OffersListState extends State<OffersListView> {
         Expanded(
             child: ListView.builder(
           itemBuilder: _buildOfferItem,
-          itemCount: _meals.length,
+          itemCount: _offers.length,
         ))
       ]),
       floatingActionButton: FloatingActionButton(
@@ -47,20 +47,20 @@ class _OffersListState extends State<OffersListView> {
   Widget _buildOfferItem(BuildContext context, int index) {
     return Card(
       child: ListTile(
-        leading: Image.network(Api().getOfferImageUrl(_meals[index]['Id'])),
-        title: Text(_meals[index]['Title'],
+        //leading: Image.network(Api().getOfferImageUrl(_meals[index]['Id'])),
+        title: Text(_offers[index]['title'],
             style: TextStyle(color: Colors.black54)),
-        subtitle: Text(_meals[index]['Price'].toString(),
+        subtitle: Text(_offers[index]['price'].toString(),
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
       ),
     );
   }
 
   _loadOffers() async {
-    var response = await Api().getData('/offers');
+    var response = await Api().getData('/offer');
     if (response.statusCode == 200) {
       setState(() {
-        _meals = json.decode(response.body);
+        _offers = json.decode(response.body);
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

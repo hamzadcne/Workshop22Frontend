@@ -10,10 +10,20 @@ class AddOfferView extends StatefulWidget {
 }
 
 class _AddOfferState extends State<AddOfferView> {
-  var title;
-  var category_id = 1;
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
   var user_id = 1;
+  var title;
   var price;
+  String category_id = "2";
+  var categories = [];
+  //   {'id': 1, 'name': 'category 1'},
+  //   {'id': 2, 'name': 'category 2'}
+  // ];
 
   // File _image;
   //final picker = ImagePicker();
@@ -24,7 +34,7 @@ class _AddOfferState extends State<AddOfferView> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text('Add new Meal'),
+        title: Text('Add new Offer'),
       ),
       body: Stack(
         children: <Widget>[
@@ -56,6 +66,21 @@ class _AddOfferState extends State<AddOfferView> {
               onChanged: (value) {
                 price = value;
               },
+            ),
+            DropdownButton(
+              hint: Text('Select Category'),
+              items: categories.map((item) {
+                return new DropdownMenuItem(
+                  child: Text(item['name']),
+                  value: item['id'].toString(),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  category_id = value;
+                });
+              },
+              value: category_id,
             ),
             //OutlinedButton(onPressed: getImage, child: _buildImage()),
             SizedBox(
@@ -118,6 +143,19 @@ class _AddOfferState extends State<AddOfferView> {
   //     }
   //   });
   // }
+  _loadCategories() async {
+    var response = await Api().getData('/category');
+    if (response.statusCode == 200) {
+      setState(() {
+        categories = json.decode(response.body);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            'Error ' + response.statusCode.toString() + ': ' + response.body),
+      ));
+    }
+  }
 
   void _submit() async {
     // setState(() {
@@ -126,12 +164,12 @@ class _AddOfferState extends State<AddOfferView> {
     var data = new Map<String, String>();
     data['title'] = title;
     data['price'] = price;
-    data['user_id'] = user_id.toString();
+    //data['user_id'] = user_id.toString();
     data['category_id'] = category_id.toString();
     // data['image'] = _image.path;
 
     //var response = await Api().postDataWithImage(data, '/offers', _image.path);
-    var response = await Api().postData(data, '/offers');
+    var response = await Api().postData(data, '/offer');
 
     if (response.statusCode == 201) {
       Navigator.pop(context);

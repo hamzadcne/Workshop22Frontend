@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/AddOfferView.dart';
 import 'package:frontend/screens/LoginPage.dart';
 import 'package:frontend/screens/OffersListView.dart';
 import 'package:http/http.dart' as http;
@@ -111,15 +112,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 //.then((_) => _checkLoggedInUser());
               },
             ),
-            // ListTile(
-            //   title: Text('Add offer'),
-            //   onTap: () {
-            //     Navigator.push(context,
-            //         MaterialPageRoute(builder: (context) => AddOfferView()));
-            //   },
-            // ),
             ListTile(
-              title: Text('Offers (with images)'),
+              title: Text('Add offer'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddOfferView()));
+              },
+            ),
+            ListTile(
+              title: Text('Offers'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => OffersListView()));
