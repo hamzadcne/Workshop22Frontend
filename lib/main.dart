@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/AddOfferView.dart';
 import 'package:frontend/screens/LoginPage.dart';
+import 'package:frontend/screens/MapView.dart';
 import 'package:frontend/screens/OffersListView.dart';
 import 'package:http/http.dart' as http;
 
@@ -133,6 +134,13 @@ class _MyHomePageState extends State<MyHomePage> {
             //     // ...
             //   },
             // ),
+            ListTile(
+              title: Text('Map'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MapView()));
+              },
+            ),
           ],
         ),
       ),
