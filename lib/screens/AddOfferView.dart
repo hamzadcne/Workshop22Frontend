@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/Api.dart';
+import 'package:picker/picker.dart';
 
 class AddOfferView extends StatefulWidget {
   @override
@@ -25,8 +26,8 @@ class _AddOfferState extends State<AddOfferView> {
   //   {'id': 2, 'name': 'category 2'}
   // ];
 
-  // File _image;
-  //final picker = ImagePicker();
+  File _image;
+  //final picker = imagepic;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +83,7 @@ class _AddOfferState extends State<AddOfferView> {
               },
               value: category_id,
             ),
-            //OutlinedButton(onPressed: getImage, child: _buildImage()),
+            OutlinedButton(onPressed: getImage, child: _buildImage()),
             SizedBox(
               height: 20.0,
             ),
@@ -119,30 +120,31 @@ class _AddOfferState extends State<AddOfferView> {
   //   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
   // );
   // }
-  // Widget _buildImage() {
-  //   if (_image == null) {
-  //     return Padding(
-  //       padding: const EdgeInsets.fromLTRB(1, 1, 1, 1),
-  //       child: Icon(
-  //         Icons.add,
-  //         color: Colors.grey,
-  //       ),
-  //     );
-  //   } else {
-  //     return Image.file(File(_image.path));
-  //   }
-  // }
+  Widget _buildImage() {
+    if (_image == null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(1, 1, 1, 1),
+        child: Icon(
+          Icons.add,
+          color: Colors.grey,
+        ),
+      );
+    } else {
+      return Image.file(File(_image.path));
+    }
+  }
 
-  // Future getImage() async {
-  //   final pickedFile = await picker.getImage(source: ImageSource.gallery);
-  //   setState(() {
-  //     if (pickedFile != null) {
-  //       _image = File(pickedFile.path);
-  //     } else {
-  //       print('No image selected.');
-  //     }
-  //   });
-  // }
+  Future getImage() async {
+    final pickedFile = await Picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   _loadCategories() async {
     var response = await Api().getData('/category');
     if (response.statusCode == 200) {
@@ -166,10 +168,10 @@ class _AddOfferState extends State<AddOfferView> {
     data['price'] = price;
     //data['user_id'] = user_id.toString();
     data['category_id'] = category_id.toString();
-    // data['image'] = _image.path;
+    data['image'] = _image.path;
 
-    //var response = await Api().postDataWithImage(data, '/offers', _image.path);
-    var response = await Api().postData(data, '/offer');
+    var response = await Api().postDataWithImage(data, '/offers', _image.path);
+    //var response = await Api().postData(data, '/offer');
 
     if (response.statusCode == 201) {
       Navigator.pop(context);

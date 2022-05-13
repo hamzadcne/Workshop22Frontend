@@ -25,20 +25,20 @@ class Api {
     return await http.get(Uri.parse(fullUrl), headers: _setHeaders());
   }
 
-  // postDataWithImage(data, apiUrl, filepath) async {
-  //   var fullUrl = _baseUrl + apiUrl;
-  //   //token = await SharedPreferencesManager().getAuthToken();
-  //   Map<String, String> headers = {
-  //     'Content-Type': 'multipart/form-data',
-  //     'Accept': 'application/json',
-  //     'Authorization': 'Bearer $token'
-  //   };
-  //   var request = http.MultipartRequest('POST', Uri.parse(fullUrl))
-  //     ..fields.addAll(data)
-  //     ..headers.addAll(headers)
-  //     ..files.add(await http.MultipartFile.fromPath('image', filepath));
-  //   return await request.send();
-  // }
+  postDataWithImage(data, apiUrl, filepath) async {
+    var fullUrl = _baseUrl + apiUrl;
+    //token = await SharedPreferencesManager().getAuthToken();
+    Map<String, String> headers = {
+      'Content-Type': 'multipart/form-data',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse(fullUrl))
+      ..fields.addAll(data)
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('image', filepath));
+    return await request.send();
+  }
 
   // String getOfferImageUrl(id) {
   //   return _baseUrl + '/images/meal/$id';

@@ -177,6 +177,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.11.1"
+  picker:
+    dependency: "direct main"
+    description:
+      name: picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6"
   platform:
     dependency: transitive
     description:
