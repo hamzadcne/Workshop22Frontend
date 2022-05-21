@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/Api.dart';
-import 'package:picker/picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddOfferView extends StatefulWidget {
   @override
@@ -17,11 +17,13 @@ class _AddOfferState extends State<AddOfferView> {
     _loadCategories();
   }
 
+  ImagePicker _picker = ImagePicker();
   var user_id = 1;
   var title;
   var price;
   String category_id = "2";
   var categories = [];
+  List<XFile> images = [];
   //   {'id': 1, 'name': 'category 1'},
   //   {'id': 2, 'name': 'category 2'}
   // ];
@@ -83,7 +85,14 @@ class _AddOfferState extends State<AddOfferView> {
               },
               value: category_id,
             ),
-            OutlinedButton(onPressed: getImage, child: _buildImage()),
+            //OutlinedButton(onPressed: getImage, child: _buildImage()),
+            ElevatedButton(
+              onPressed: _pickImages,
+              child: Text(
+                'Add Images',
+              ),
+            ),
+            _buildGridView(),
             SizedBox(
               height: 20.0,
             ),
@@ -135,13 +144,59 @@ class _AddOfferState extends State<AddOfferView> {
   }
 
   Future getImage() async {
-    final pickedFile = await Picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
+    });
+  }
+
+  Widget _buildGridView() {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 3,
+      childAspectRatio: 1,
+      children: List.generate(images.length, (index) {
+        File image = File(images[index].path);
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          child: Stack(
+            children: <Widget>[
+              Image.file(
+                image,
+                width: 300,
+                height: 300,
+              ),
+              Positioned(
+                right: 5,
+                top: 5,
+                child: InkWell(
+                  child: Icon(
+                    Icons.remove_circle,
+                    size: 30,
+                    color: Colors.red,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      images.removeAt(index);
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  _pickImages() async {
+    List<XFile> res = await _picker.pickMultiImage();
+    setState(() {
+      images.addAll(res);
     });
   }
 
@@ -168,9 +223,9 @@ class _AddOfferState extends State<AddOfferView> {
     data['price'] = price;
     //data['user_id'] = user_id.toString();
     data['category_id'] = category_id.toString();
-    data['image'] = _image.path;
+    //data['image'] = _image.path;
 
-    var response = await Api().postDataWithImage(data, '/offers', _image.path);
+    var response = await Api().postDataWithImages(data, '/offer', images);
     //var response = await Api().postData(data, '/offer');
 
     if (response.statusCode == 201) {

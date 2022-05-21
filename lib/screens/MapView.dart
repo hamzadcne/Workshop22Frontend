@@ -10,6 +10,7 @@ class _MapViewState extends State<MapView> {
   GoogleMapController mapController;
   final Set<Marker> markers = new Set();
   final LatLng _center = const LatLng(36, 6);
+  LatLng lastPosition;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -23,12 +24,16 @@ class _MapViewState extends State<MapView> {
         backgroundColor: Colors.green[700],
       ),
       body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
-          ),
-          markers: getmarkers()),
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: _center,
+          zoom: 11.0,
+        ),
+        markers: markers,
+        onLongPress: (LatLng pos) {
+          _setPosition(pos);
+        },
+      ),
     );
   }
 
@@ -63,5 +68,22 @@ class _MapViewState extends State<MapView> {
     });
 
     return markers;
+  }
+
+  _setPosition(LatLng pos) {
+    lastPosition = pos;
+    setState(() {
+      markers.clear();
+      markers.add(Marker(
+        markerId: MarkerId(pos.toString()),
+        position: pos, //position of marker
+        infoWindow: InfoWindow(
+            //popup info
+            // title: 'Marker Title Second ',
+            // snippet: 'My Custom Subtitle',
+            ),
+        icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+      ));
+    });
   }
 }

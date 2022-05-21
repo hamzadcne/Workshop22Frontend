@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class Api {
-  final String _baseUrl = 'http://192.168.1.6:8000/api';
+  final String _baseUrl = 'http://192.168.1.4:8000/api';
   //if you are using android studio emulator, change localhost to 10.0.2.2
   var token;
 
@@ -40,9 +41,27 @@ class Api {
     return await request.send();
   }
 
-  // String getOfferImageUrl(id) {
-  //   return _baseUrl + '/images/meal/$id';
-  // }
+  postDataWithImages(data, apiUrl, List<XFile> files) async {
+    var fullUrl = _baseUrl + apiUrl;
+    //token = await SharedPreferencesManager().getAuthToken();
+    Map<String, String> headers = {
+      'Content-Type': 'multipart/form-data',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse(fullUrl))
+      ..fields.addAll(data)
+      ..headers.addAll(headers);
+    for (var file in files) {
+      request.files
+          .add(await http.MultipartFile.fromPath('images[]', file.path));
+    }
+    return await request.send();
+  }
+
+  String getOfferImageUrl(id) {
+    return _baseUrl + '/images/$id';
+  }
 
   _setHeaders() => {
         'Content-type': 'application/json',

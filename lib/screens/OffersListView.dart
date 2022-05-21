@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/helpers/Api.dart';
 
 import 'AddOfferView.dart';
+import 'OfferDetailsView.dart';
 
 class OffersListView extends StatefulWidget {
   @override
@@ -52,6 +53,13 @@ class _OffersListState extends State<OffersListView> {
             style: TextStyle(color: Colors.black54)),
         subtitle: Text(_offers[index]['price'].toString(),
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      OfferDetailsView(offer_id: _offers[index]['id'])));
+        },
       ),
     );
   }
